@@ -1,6 +1,5 @@
 ﻿using eDomain.mEntities.mRefs;
 using eDomain.mEnums;
-using eUShop.Domains.mEnums;
 
 namespace eDomain.mEntities.mUser
 {

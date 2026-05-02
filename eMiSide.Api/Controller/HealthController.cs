@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace eMiSide.Api.Controller
 {
-    [Route(template: "api/[controller]")]
+    [Route("api/health")]
     [ApiController]
     public class HealthController : ControllerBase
     {
-        [HttpGet(template: "ping")]
-        public IActionResult Ping()
+        [HttpGet("status")]
+        public IActionResult Get()
         {
-            return Ok("pong");
+            return Ok("Healthy");
         }
     }
 }
