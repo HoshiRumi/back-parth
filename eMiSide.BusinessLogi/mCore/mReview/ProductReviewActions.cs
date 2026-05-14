@@ -1,28 +1,57 @@
-﻿using eDomain.mModels.mReview;
+﻿using eDomain.mEntities.mReview;
+using eDomain.mModels.mReview;
+using eMiSide.DataAccess.Context;
 
 namespace eMiSide.BusinessLogic.Core.Review
 {
     public class ProductReviewActions
     {
-        private static List<ProductReviewDto> _reviews = new();
-        private static int _nextId = 1;
-
         public ProductReviewDto Create(ProductReviewDto review)
         {
-            review.Id = _nextId++;
-            _reviews.Add(review);
-            return review;
+            using (var db = new AppDbContext())
+            {
+                var newReview = new ReviewData
+                {
+                    UserId = review.UserId,
+                    ProductId = review.ProductId,
+                    Rating = review.Rating,
+                    Comment = review.Comment,
+                    CreatedAt = DateTime.UtcNow
+                };
+                db.Reviews.Add(newReview);
+                db.SaveChanges();
+                review.Id = newReview.Id;
+                return review;
+            }
         }
 
-        public List<ProductReviewDto> GetByProductId(int productId) =>
-            _reviews.Where(r => r.ProductId == productId).ToList();
+        public List<ProductReviewDto> GetByProductId(int productId)
+        {
+            using (var db = new AppDbContext())
+            {
+                return db.Reviews
+                    .Where(r => r.ProductId == productId)
+                    .Select(r => new ProductReviewDto
+                    {
+                        Id = r.Id,
+                        UserId = r.UserId,
+                        ProductId = r.ProductId,
+                        Rating = r.Rating,
+                        Comment = r.Comment
+                    }).ToList();
+            }
+        }
 
         public bool Delete(int id)
         {
-            var review = _reviews.FirstOrDefault(r => r.Id == id);
-            if (review == null) return false;
-            _reviews.Remove(review);
-            return true;
+            using (var db = new AppDbContext())
+            {
+                var review = db.Reviews.FirstOrDefault(r => r.Id == id);
+                if (review == null) return false;
+                db.Reviews.Remove(review);
+                db.SaveChanges();
+                return true;
+            }
         }
     }
 }

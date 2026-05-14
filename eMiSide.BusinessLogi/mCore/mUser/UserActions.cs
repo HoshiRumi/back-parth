@@ -1,46 +1,83 @@
 ﻿using eDomain.mEntities.mUser;
 using eDomain.mModels.mUser;
+using eMiSide.DataAccess.Context;
 
 namespace eMiSide.BusinessLogic.Core.User
 {
     public class UserActions
     {
-        private static List<UserDto> _users = new();
-        private static int _nextId = 1;
+        public List<UserDto> GetAll()
+        {
+            using (var db = new AppDbContext())
+            {
+                return db.Users.Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Username = u.Username
+                }).ToList();
+            }
+        }
 
-        public List<UserDto> GetAll() => _users;
-
-        public UserDto? GetById(int id) =>
-            _users.FirstOrDefault(u => u.Id == id);
+        public UserDto? GetById(int id)
+        {
+            using (var db = new AppDbContext())
+            {
+                var u = db.Users.FirstOrDefault(u => u.Id == id);
+                if (u == null) return null;
+                return new UserDto
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Username = u.Username
+                };
+            }
+        }
 
         public UserDto? Create(UserData user)
         {
-            if (_users.Any(u => u.Email == user.Email)) return null;
-            var dto = new UserDto
+            using (var db = new AppDbContext())
             {
-                Id = _nextId++,
-                Email = user.Email,
-                Username = user.Username
-            };
-            _users.Add(dto);
-            return dto;
+                if (db.Users.Any(u => u.Email == user.Email)) return null;
+                db.Users.Add(user);
+                db.SaveChanges();
+                return new UserDto
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Username = user.Username
+                };
+            }
         }
 
         public bool Delete(int id)
         {
-            var user = _users.FirstOrDefault(u => u.Id == id);
-            if (user == null) return false;
-            _users.Remove(user);
-            return true;
+            using (var db = new AppDbContext())
+            {
+                var user = db.Users.FirstOrDefault(u => u.Id == id);
+                if (user == null) return false;
+                db.Users.Remove(user);
+                db.SaveChanges();
+                return true;
+            }
         }
 
         public UserDto? Update(int id, UserData user)
         {
-            var existing = _users.FirstOrDefault(u => u.Id == id);
-            if (existing == null) return null;
-            existing.Email = user.Email;
-            existing.Username = user.Username;
-            return existing;
+            using (var db = new AppDbContext())
+            {
+                var existing = db.Users.FirstOrDefault(u => u.Id == id);
+                if (existing == null) return null;
+                existing.Email = user.Email;
+                existing.Username = user.Username;
+                db.SaveChanges();
+                return new UserDto
+                {
+                    Id = existing.Id,
+                    Email = existing.Email,
+                    Username = existing.Username
+                };
+            }
         }
     }
 }

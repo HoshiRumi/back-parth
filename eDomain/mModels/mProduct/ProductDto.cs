@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using eDomain.mEnums;
 
 namespace eDomain.mModels.mProduct
 {
@@ -15,6 +11,6 @@ namespace eDomain.mModels.mProduct
         public int Stock { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
         public string CategoryName { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
+        public ProductStatus Status { get; set; } = ProductStatus.Available;
     }
 }

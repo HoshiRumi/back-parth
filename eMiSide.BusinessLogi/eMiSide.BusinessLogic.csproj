@@ -7,15 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="mCore\mCart\CartActions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\eDomain\eDomain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="mCore\mCart\CartActions.cs" />
+    <ProjectReference Include="..\eMiSide.DataAccess\eMiSide.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
