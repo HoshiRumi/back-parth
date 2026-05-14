@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\eDomain\eDomain.csproj" />
     <ProjectReference Include="..\eMiSide.BusinessLogi\eMiSide.BusinessLogic.csproj" />
+    <ProjectReference Include="..\eMiSide.DataAccess\eMiSide.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

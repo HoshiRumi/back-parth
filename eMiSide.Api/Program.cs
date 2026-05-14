@@ -1,4 +1,9 @@
+using eMiSide.DataAccess;
+using Microsoft.AspNetCore.Http;
+
 var builder = WebApplication.CreateBuilder(args);
+
+DbSession.ConnectionStrings = builder.Configuration.GetConnectionString("DefaultConnection")!;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -15,5 +20,4 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();
