@@ -1,15 +1,18 @@
 ﻿using eDomain.mEntities.mUser;
 using eDomain.mModels.mUser;
 using eMiSide.BusinessLogic.mInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eMiSide.Api.Controller
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private IUserActions _userActions;
+
         public UserController()
         {
             var bl = new BusinessLogic.BusinessLogic();

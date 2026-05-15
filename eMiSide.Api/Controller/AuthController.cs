@@ -1,5 +1,6 @@
 ﻿using eMiSide.BusinessLogic.mInterfaces;
 using eDomain.mModels.mUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eMiSide.Api.Controller
@@ -17,20 +18,27 @@ namespace eMiSide.Api.Controller
         }
 
         [HttpGet("status")]
+        [AllowAnonymous]
         public IActionResult Get() => Ok("Session is active");
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public IActionResult Login([FromBody] UserAuthAction data)
         {
             var token = _auth.LoginActionFlow(data);
-            return Ok(token);
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized(new { Message = "Invalid email or password" });
+            return Ok(new { Token = token });
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public IActionResult Register([FromBody] UserAuthAction data)
         {
             var token = _auth.RegisterActionFlow(data);
-            return Ok(token);
+            if (string.IsNullOrEmpty(token))
+                return Conflict(new { Message = "Email is already in use" });
+            return Ok(new { Token = token });
         }
     }
 }

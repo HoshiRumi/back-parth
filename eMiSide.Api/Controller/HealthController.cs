@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace eMiSide.Api.Controller
 {
@@ -7,6 +8,7 @@ namespace eMiSide.Api.Controller
     public class HealthController : ControllerBase
     {
         [HttpGet("status")]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             return Ok("Healthy");

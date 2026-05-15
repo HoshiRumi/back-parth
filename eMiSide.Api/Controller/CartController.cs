@@ -1,14 +1,17 @@
 ﻿using eDomain.mModels.mCart;
 using eMiSide.BusinessLogic.mInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eMiSide.Api.Controller
 {
     [Route("api/cart")]
     [ApiController]
+    [Authorize]
     public class CartController : ControllerBase
     {
         private ICartActions _cart;
+
         public CartController()
         {
             var bl = new BusinessLogic.BusinessLogic();
@@ -35,7 +38,6 @@ namespace eMiSide.Api.Controller
                 return BadRequest("Quantity must be greater than 0");
             if (item.UnitPrice <= 0)
                 return BadRequest("Unit price must be greater than 0");
-
             var updatedCart = _cart.AddItemToCartAction(item);
             if (updatedCart == null)
                 return BadRequest("Item was not added to cart");
@@ -51,7 +53,6 @@ namespace eMiSide.Api.Controller
                 return BadRequest("Quantity must be greater than 0");
             if (item.UnitPrice <= 0)
                 return BadRequest("Unit price must be greater than 0");
-
             var updatedCart = _cart.UpdateCartItemAction(itemId, item);
             if (updatedCart == null)
                 return NotFound(new { Message = $"Cart item with ID {itemId} not found" });

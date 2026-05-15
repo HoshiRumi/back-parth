@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\eDomain\eDomain.csproj" />
     <ProjectReference Include="..\eMiSide.DataAccess\eMiSide.DataAccess.csproj" />
   </ItemGroup>

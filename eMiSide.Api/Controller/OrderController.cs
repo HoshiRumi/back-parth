@@ -1,14 +1,17 @@
 ﻿using eDomain.mModels.mOrder;
 using eMiSide.BusinessLogic.mInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eMiSide.Api.Controller
 {
     [Route("api/order")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private IOrderActions _orderActions;
+
         public OrderController()
         {
             var bl = new BusinessLogic.BusinessLogic();
@@ -32,6 +35,7 @@ namespace eMiSide.Api.Controller
         }
 
         [HttpPut("{id}/status")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateOrderStatus(int id, [FromQuery] string newStatus)
         {
             var order = _orderActions.UpdateOrderStatusAction(id, newStatus);

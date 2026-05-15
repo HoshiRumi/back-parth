@@ -1,39 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using eDomain.mEntities.mUser;
+﻿using eDomain.mEntities.mUser;
+using eDomain.mEnums;
 using eDomain.mModels.mUser;
+using eMiSide.DataAccess.Context;
+using eMiSide.BusinessLogic.Structure;
 
 namespace eMiSide.BusinessLogic.Core.Auth
 {
     public class AuthActions
     {
-        private static List<UserData> _users = new();
-        private static int _nextId = 1;
+        private readonly TokenService _tokenService = new();
 
         public string Login(UserAuthAction data)
         {
-            var user = _users.FirstOrDefault(u =>
+            using var db = new AppDbContext();
+            var user = db.Users.FirstOrDefault(u =>
                 u.Email == data.Email && u.PasswordHash == data.Password);
             if (user == null) return string.Empty;
-            return $"stub-token-{user.Id}";
+            return _tokenService.GenerateToken(user.Id, user.Username, user.Role);
         }
 
         public string Register(UserAuthAction data)
         {
-            if (_users.Any(u => u.Email == data.Email))
-                return string.Empty;
+            using var db = new AppDbContext();
+            if (db.Users.Any(u => u.Email == data.Email)) return string.Empty;
 
-            _users.Add(new UserData
+            var newUser = new UserData
             {
-                Id = _nextId++,
                 Username = data.Username,
                 Email = data.Email,
-                PasswordHash = data.Password
-            });
-            return $"stub-token-{_nextId}";
+                PasswordHash = data.Password,
+                Role = UserRole.Customer
+            };
+            db.Users.Add(newUser);
+            db.SaveChanges();
+            return _tokenService.GenerateToken(newUser.Id, newUser.Username, newUser.Role);
         }
     }
 }
