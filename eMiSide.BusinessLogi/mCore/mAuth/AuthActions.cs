@@ -1,8 +1,8 @@
 ﻿using eDomain.mEntities.mUser;
 using eDomain.mEnums;
 using eDomain.mModels.mUser;
-using eMiSide.DataAccess.Context;
 using eMiSide.BusinessLogic.Structure;
+using eMiSide.DataAccess.Context;
 
 namespace eMiSide.BusinessLogic.Core.Auth
 {
@@ -13,8 +13,9 @@ namespace eMiSide.BusinessLogic.Core.Auth
         public string Login(UserAuthAction data)
         {
             using var db = new AppDbContext();
+            var hashed = PasswordHasher.Hash(data.Password);
             var user = db.Users.FirstOrDefault(u =>
-                u.Email == data.Email && u.PasswordHash == data.Password);
+                u.Email == data.Email && u.PasswordHash == hashed);
             if (user == null) return string.Empty;
             return _tokenService.GenerateToken(user.Id, user.Username, user.Role);
         }
@@ -28,7 +29,7 @@ namespace eMiSide.BusinessLogic.Core.Auth
             {
                 Username = data.Username,
                 Email = data.Email,
-                PasswordHash = data.Password,
+                PasswordHash = PasswordHasher.Hash(data.Password),
                 Role = UserRole.Customer
             };
             db.Users.Add(newUser);

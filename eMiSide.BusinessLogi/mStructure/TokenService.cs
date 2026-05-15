@@ -8,13 +8,9 @@ namespace eMiSide.BusinessLogic.Structure
 {
     public class TokenService
     {
-        private const string Issuer = "eMiSideApi";
-        private const string Audience = "eMiSideClients";
-        private const string SecretKey = "eMiSide_curs2026_super_secret_min_32_caractere!";
-
         public string GenerateToken(int userId, string userName, UserRole role)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -25,10 +21,10 @@ namespace eMiSide.BusinessLogic.Structure
             };
 
             var token = new JwtSecurityToken(
-                issuer: Issuer,
-                audience: Audience,
+                issuer: JwtSettings.Issuer,
+                audience: JwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(60),
+                expires: DateTime.UtcNow.AddMinutes(JwtSettings.ExpireMinutes),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
